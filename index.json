@@ -98,6 +98,51 @@
       "yaml": "name: discord.notify\ndescription: Post a message to a Discord channel webhook\nsideEffect: message-human\nestimateCents: 0\nhttp:\n  url: \"{{secret:DISCORD_WEBHOOK}}\"\n  method: POST\n  body:\n    content: \"{{input.message}}\"\ninput:\n  message:\n    type: string\n    required: true\n"
     },
     {
+      "name": "slack.notify",
+      "title": "Slack notify",
+      "oneLiner": "Post a message to a Slack channel via an Incoming Webhook.",
+      "category": "Messaging",
+      "sideEffect": "message-human",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "yaml",
+      "secretRefs": [
+        "slack-webhook"
+      ],
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: slack.notify\ndescription: Post a message to a Slack channel via an Incoming Webhook URL.\nsideEffect: message-human\nestimateCents: 0\nhttp:\n  url: \"{{secret:slack-webhook}}\"\n  method: POST\n  headers:\n    Content-Type: \"application/json\"\n  body:\n    text: \"{{input.message}}\"\ninput:\n  message:\n    type: string\n    required: true\n    description: The message text to post.\nsuccessCodes:\n  - 200\n"
+    },
+    {
+      "name": "webhook.post",
+      "title": "Webhook POST",
+      "oneLiner": "POST a JSON message to any webhook URL you control.",
+      "category": "Messaging",
+      "sideEffect": "message-human",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "yaml",
+      "secretRefs": [
+        "webhook-url"
+      ],
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: webhook.post\ndescription: POST a JSON payload to a webhook URL (Zapier-free; your own endpoint).\nsideEffect: message-human\nestimateCents: 0\nhttp:\n  url: \"{{secret:webhook-url}}\"\n  method: POST\n  headers:\n    Content-Type: \"application/json\"\n  body:\n    event: \"{{input.event}}\"\n    message: \"{{input.message}}\"\ninput:\n  event:\n    type: string\n    description: Optional event name/type.\n  message:\n    type: string\n    required: true\n    description: The payload message.\nsuccessCodes:\n  - 200\n  - 201\n  - 202\n  - 204\n"
+    },
+    {
+      "name": "github.dispatch",
+      "title": "Trigger GitHub Actions",
+      "oneLiner": "Kick off a GitHub Actions workflow via repository_dispatch.",
+      "category": "Automation",
+      "sideEffect": "write-irreversible",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "yaml",
+      "secretRefs": [
+        "github-token"
+      ],
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: github.dispatch\ndescription: Trigger a GitHub Actions workflow via the repository_dispatch API.\nsideEffect: write-irreversible\nestimateCents: 0\nhttp:\n  url: \"https://api.github.com/repos/{{input.repo}}/dispatches\"\n  method: POST\n  headers:\n    Accept: \"application/vnd.github+json\"\n    Authorization: \"Bearer {{secret:github-token}}\"\n    User-Agent: \"krelvan\"\n  body:\n    event_type: \"{{input.event_type}}\"\ninput:\n  repo:\n    type: string\n    required: true\n    description: \"owner/name of the repository.\"\n  event_type:\n    type: string\n    required: true\n    description: The repository_dispatch event type your workflow listens for.\nsuccessCodes:\n  - 204\n"
+    },
+    {
       "name": "deploy.vercel",
       "title": "Deploy to Vercel",
       "oneLiner": "Ship a production deployment on Vercel via a Deploy Hook.",
