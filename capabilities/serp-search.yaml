@@ -1,0 +1,11 @@
+name: serp.search
+description: Web search results via SerpApi (requires a SERP_API_KEY)
+sideEffect: read
+estimateCents: 0
+http:
+  url: https://serpapi.com/search.json?q={{input.q}}&api_key={{secret:SERP_API_KEY}}
+  method: GET
+input:
+  q:
+    type: string
+    required: true

@@ -1,0 +1,193 @@
+{
+  "$schema": "https://krelvan.com/registry.schema.json",
+  "version": 1,
+  "updated": "2026-06-15",
+  "capabilities": [
+    {
+      "name": "github",
+      "title": "GitHub",
+      "oneLiner": "Read repos, issues and PRs — every tool becomes a capability.",
+      "category": "Connectors",
+      "sideEffect": "read",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "mcp",
+      "sourceUrl": "https://github.com/modelcontextprotocol/servers/tree/main/src/github",
+      "mcp": {
+        "name": "github",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-github"
+        ],
+        "defaultSideEffect": "read"
+      },
+      "secretRefs": [
+        "GITHUB_TOKEN"
+      ]
+    },
+    {
+      "name": "filesystem",
+      "title": "Filesystem",
+      "oneLiner": "Give an agent scoped read/write access to a local folder.",
+      "category": "Connectors",
+      "sideEffect": "write-reversible",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "mcp",
+      "sourceUrl": "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem",
+      "mcp": {
+        "name": "filesystem",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-filesystem"
+        ],
+        "defaultSideEffect": "write-reversible"
+      }
+    },
+    {
+      "name": "hn.top",
+      "title": "Hacker News",
+      "oneLiner": "Fetch the current top stories from Hacker News.",
+      "category": "Research",
+      "sideEffect": "read",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "yaml",
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: hn.top\ndescription: Fetch the current top story ids from Hacker News\nsideEffect: read\nestimateCents: 0\nhttp:\n  url: https://hacker-news.firebaseio.com/v0/topstories.json\n  method: GET\n"
+    },
+    {
+      "name": "weather.fetch",
+      "title": "Weather",
+      "oneLiner": "Current forecast for any latitude/longitude — no key needed.",
+      "category": "Research",
+      "sideEffect": "read",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "yaml",
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: weather.fetch\ndescription: Fetch the current weather for a location (Open-Meteo, no key)\nsideEffect: read\nestimateCents: 0\nhttp:\n  url: https://api.open-meteo.com/v1/forecast?latitude={{input.lat}}&longitude={{input.lon}}&current_weather=true\n  method: GET\ninput:\n  lat:\n    type: string\n    required: true\n  lon:\n    type: string\n    required: true\nresponseField: current_weather\n"
+    },
+    {
+      "name": "wikipedia.summary",
+      "title": "Wikipedia",
+      "oneLiner": "Get the summary extract for any Wikipedia article.",
+      "category": "Research",
+      "sideEffect": "read",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "yaml",
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: wikipedia.summary\ndescription: Fetch the summary of a Wikipedia article\nsideEffect: read\nestimateCents: 0\nhttp:\n  url: https://en.wikipedia.org/api/rest_v1/page/summary/{{input.title}}\n  method: GET\ninput:\n  title:\n    type: string\n    required: true\n"
+    },
+    {
+      "name": "discord.notify",
+      "title": "Discord notify",
+      "oneLiner": "Post a message to a Discord channel via webhook.",
+      "category": "Messaging",
+      "sideEffect": "message-human",
+      "tier": "community",
+      "author": "community",
+      "kind": "yaml",
+      "secretRefs": [
+        "DISCORD_WEBHOOK"
+      ],
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: discord.notify\ndescription: Post a message to a Discord channel webhook\nsideEffect: message-human\nestimateCents: 0\nhttp:\n  url: \"{{secret:DISCORD_WEBHOOK}}\"\n  method: POST\n  body:\n    content: \"{{input.message}}\"\ninput:\n  message:\n    type: string\n    required: true\n"
+    },
+    {
+      "name": "deploy.vercel",
+      "title": "Deploy to Vercel",
+      "oneLiner": "Ship a production deployment on Vercel via a Deploy Hook.",
+      "category": "Deploy",
+      "sideEffect": "write-irreversible",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "yaml",
+      "secretRefs": [
+        "vercel-deploy-hook"
+      ],
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: deploy.vercel\ndescription: Trigger a production deployment on Vercel via a Deploy Hook URL.\nsideEffect: write-irreversible\nestimateCents: 0\nhttp:\n  url: \"{{secret:vercel-deploy-hook}}\"\n  method: POST\n  headers:\n    Content-Type: \"application/json\"\n  body:\n    ref: \"{{input.ref}}\"\ninput:\n  ref:\n    type: string\n    description: Optional git ref (branch or commit) to deploy.\nsuccessCodes:\n  - 200\n  - 201\n  - 202\n"
+    },
+    {
+      "name": "deploy.netlify",
+      "title": "Deploy to Netlify",
+      "oneLiner": "Trigger a build and deploy on Netlify via a Build Hook.",
+      "category": "Deploy",
+      "sideEffect": "write-irreversible",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "yaml",
+      "secretRefs": [
+        "netlify-build-hook"
+      ],
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: deploy.netlify\ndescription: Trigger a build and deploy on Netlify via a Build Hook URL.\nsideEffect: write-irreversible\nestimateCents: 0\nhttp:\n  url: \"{{secret:netlify-build-hook}}\"\n  method: POST\n  headers:\n    Content-Type: \"application/json\"\n  body:\n    trigger_branch: \"{{input.branch}}\"\n    trigger_title: \"{{input.title}}\"\ninput:\n  branch:\n    type: string\n    description: Optional branch to build.\n  title:\n    type: string\n    description: Optional reason shown in the Netlify deploy log.\nsuccessCodes:\n  - 200\n  - 201\n  - 202\n  - 204\n"
+    },
+    {
+      "name": "deploy.cloudflare_pages",
+      "title": "Deploy to Cloudflare Pages",
+      "oneLiner": "Queue a Cloudflare Pages deployment via a Deploy Hook.",
+      "category": "Deploy",
+      "sideEffect": "write-irreversible",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "yaml",
+      "secretRefs": [
+        "cloudflare-pages-hook"
+      ],
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: deploy.cloudflare_pages\ndescription: Trigger a Cloudflare Pages deployment via a Deploy Hook URL.\nsideEffect: write-irreversible\nestimateCents: 0\nhttp:\n  url: \"{{secret:cloudflare-pages-hook}}\"\n  method: POST\n  headers:\n    Content-Type: \"application/json\"\n  body:\n    reason: \"{{input.reason}}\"\ninput:\n  reason:\n    type: string\n    description: Optional human-readable reason for the deploy.\nsuccessCodes:\n  - 200\n  - 201\n  - 202\n"
+    },
+    {
+      "name": "deploy.render",
+      "title": "Deploy to Render",
+      "oneLiner": "Trigger a deploy on Render via a service Deploy Hook.",
+      "category": "Deploy",
+      "sideEffect": "write-irreversible",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "yaml",
+      "secretRefs": [
+        "render-deploy-hook"
+      ],
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: deploy.render\ndescription: Trigger a deploy on Render via a service Deploy Hook URL.\nsideEffect: write-irreversible\nestimateCents: 0\nhttp:\n  url: \"{{secret:render-deploy-hook}}\"\n  method: POST\n  headers:\n    Content-Type: \"application/json\"\n  body:\n    ref: \"{{input.ref}}\"\ninput:\n  ref:\n    type: string\n    description: Optional git ref (branch or commit SHA) to deploy.\nsuccessCodes:\n  - 200\n  - 201\n  - 202\n"
+    },
+    {
+      "name": "deploy.railway",
+      "title": "Deploy to Railway",
+      "oneLiner": "Redeploy a Railway service via the GraphQL API.",
+      "category": "Deploy",
+      "sideEffect": "write-irreversible",
+      "tier": "official",
+      "author": "Krelvan",
+      "kind": "yaml",
+      "secretRefs": [
+        "railway-token"
+      ],
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: deploy.railway\ndescription: Trigger a redeploy on Railway via the project GraphQL API.\nsideEffect: write-irreversible\nestimateCents: 0\nhttp:\n  url: \"https://backboard.railway.app/graphql/v2\"\n  method: POST\n  headers:\n    Content-Type: \"application/json\"\n    Authorization: \"Bearer {{secret:railway-token}}\"\n  body:\n    query: \"mutation($id: String!){ serviceInstanceRedeploy(serviceId: $id) }\"\n    variables:\n      id: \"{{input.serviceId}}\"\ninput:\n  serviceId:\n    type: string\n    required: true\n    description: The Railway service id to redeploy.\nsuccessCodes:\n  - 200\n"
+    },
+    {
+      "name": "serp.search",
+      "title": "SERP Search (Pro)",
+      "oneLiner": "Google-grade web search results via a managed SERP API.",
+      "category": "Research",
+      "sideEffect": "read",
+      "tier": "community",
+      "author": "marketplace",
+      "kind": "yaml",
+      "price": "from $5/mo",
+      "licenseUrl": "https://serpapi.com/",
+      "secretRefs": [
+        "SERP_API_KEY"
+      ],
+      "sourceUrl": "https://github.com/sreenathmmenon/krelvan-registry",
+      "yaml": "name: serp.search\ndescription: Web search results via SerpApi (requires a SERP_API_KEY)\nsideEffect: read\nestimateCents: 0\nhttp:\n  url: https://serpapi.com/search.json?q={{input.q}}&api_key={{secret:SERP_API_KEY}}\n  method: GET\ninput:\n  q:\n    type: string\n    required: true\n"
+    }
+  ]
+}

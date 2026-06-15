@@ -1,0 +1,7 @@
+name: hn.top
+description: Fetch the current top story ids from Hacker News
+sideEffect: read
+estimateCents: 0
+http:
+  url: https://hacker-news.firebaseio.com/v0/topstories.json
+  method: GET

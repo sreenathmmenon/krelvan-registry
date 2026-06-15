@@ -1,0 +1,15 @@
+name: weather.fetch
+description: Fetch the current weather for a location (Open-Meteo, no key)
+sideEffect: read
+estimateCents: 0
+http:
+  url: https://api.open-meteo.com/v1/forecast?latitude={{input.lat}}&longitude={{input.lon}}&current_weather=true
+  method: GET
+input:
+  lat:
+    type: string
+    required: true
+  lon:
+    type: string
+    required: true
+responseField: current_weather

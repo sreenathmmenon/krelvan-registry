@@ -1,0 +1,19 @@
+name: deploy.render
+description: Trigger a deploy on Render via a service Deploy Hook URL.
+sideEffect: write-irreversible
+estimateCents: 0
+http:
+  url: "{{secret:render-deploy-hook}}"
+  method: POST
+  headers:
+    Content-Type: "application/json"
+  body:
+    ref: "{{input.ref}}"
+input:
+  ref:
+    type: string
+    description: Optional git ref (branch or commit SHA) to deploy.
+successCodes:
+  - 200
+  - 201
+  - 202

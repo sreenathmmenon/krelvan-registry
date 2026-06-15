@@ -1,0 +1,13 @@
+name: discord.notify
+description: Post a message to a Discord channel webhook
+sideEffect: message-human
+estimateCents: 0
+http:
+  url: "{{secret:DISCORD_WEBHOOK}}"
+  method: POST
+  body:
+    content: "{{input.message}}"
+input:
+  message:
+    type: string
+    required: true

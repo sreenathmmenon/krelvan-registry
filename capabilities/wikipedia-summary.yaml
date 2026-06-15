@@ -1,0 +1,11 @@
+name: wikipedia.summary
+description: Fetch the summary of a Wikipedia article
+sideEffect: read
+estimateCents: 0
+http:
+  url: https://en.wikipedia.org/api/rest_v1/page/summary/{{input.title}}
+  method: GET
+input:
+  title:
+    type: string
+    required: true
